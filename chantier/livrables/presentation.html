@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Présentation stratégique · Plan anti-churn · Pattes & Papilles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vert-sapin: #1E4636;
+            --terracotta: #D9734E;
+            --creme: #FBF5EC;
+            --moutarde: #E8B04B;
+            --blanc: #FFFFFF;
+            --texte-sombre: #1E4636;
+            --texte-mut: #526359;
+            --bordure: #E5D9C8;
+            --fond-carte: #FFFFFF;
+            --ombre: 0 8px 24px rgba(30, 70, 54, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--creme);
+            color: var(--texte-sombre);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Conteneur principal plein écran */
+        .presentation {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: var(--creme);
+        }
+
+        /* Barre supérieure permanente */
+        header {
+            height: 54px;
+            padding: 0 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--bordure);
+            background: rgba(251, 245, 236, 0.96);
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .brand-name {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--vert-sapin);
+            letter-spacing: -0.01em;
+        }
+
+        .header-meta {
+            font-size: 13px;
+            color: var(--texte-mut);
+            font-weight: 500;
+        }
+
+        /* Scène des diapositives */
+        .slides-container {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            height: calc(100vh - 100px);
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateX(16px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 32px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+
+        /* Structure intérieure d'une diapositive */
+        .slide-content {
+            width: 100%;
+            max-width: 1120px;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+        }
+
+        /* Titre conclusion */
+        .slide-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(20px, 2.3vw, 30px);
+            font-weight: 700;
+            color: var(--vert-sapin);
+            line-height: 1.25;
+            max-width: 980px;
+        }
+
+        /* Boîte graphique */
+        .slide-graphic-box {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: 55vh;
+            width: 100%;
+        }
+
+        .slide-graphic {
+            max-height: 53vh;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 1px solid var(--bordure);
+            box-shadow: var(--ombre);
+            background: var(--blanc);
+        }
+
+        /* Message synthétique */
+        .slide-text {
+            font-size: clamp(14px, 1.35vw, 17px);
+            color: var(--vert-sapin);
+            line-height: 1.4;
+            max-width: 860px;
+            font-weight: 500;
+        }
+
+        /* Diapositive 1 : Chiffres d'ensemble */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            width: 100%;
+            max-width: 840px;
+            margin: 6px 0;
+        }
+
+        .kpi-card {
+            background: var(--blanc);
+            border: 1px solid var(--bordure);
+            border-radius: 12px;
+            padding: 22px 16px;
+            box-shadow: var(--ombre);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .kpi-value {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(32px, 3.2vw, 42px);
+            font-weight: 700;
+            color: var(--terracotta);
+            line-height: 1;
+        }
+
+        .kpi-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--vert-sapin);
+        }
+
+        /* Diapositive 8 : Plan d'action */
+        .plan-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            width: 100%;
+            max-width: 960px;
+            margin: 8px 0;
+        }
+
+        .plan-card {
+            background: var(--blanc);
+            border: 1px solid var(--bordure);
+            border-radius: 12px;
+            padding: 24px 18px;
+            box-shadow: var(--ombre);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .plan-horizon {
+            font-family: 'Fraunces', serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--terracotta);
+        }
+
+        .plan-desc {
+            font-size: 14px;
+            color: var(--vert-sapin);
+            line-height: 1.35;
+        }
+
+        /* Diapositive 9 : Modèle économique */
+        .finance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 820px;
+            margin: 8px 0;
+        }
+
+        .finance-card {
+            background: var(--blanc);
+            border: 1px solid var(--bordure);
+            border-radius: 12px;
+            padding: 26px 20px;
+            box-shadow: var(--ombre);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .finance-card.highlight {
+            border-color: var(--terracotta);
+            background: #FFFDF9;
+        }
+
+        .finance-tag {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--vert-sapin);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .finance-gain {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(28px, 2.8vw, 38px);
+            font-weight: 700;
+            color: var(--terracotta);
+        }
+
+        .finance-roi {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--vert-sapin);
+        }
+
+        /* Diapositive 10 : Gouvernance IA et Humain */
+        .governance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 860px;
+            margin: 8px 0;
+        }
+
+        .gov-card {
+            background: var(--blanc);
+            border: 1px solid var(--bordure);
+            border-radius: 12px;
+            padding: 26px 22px;
+            box-shadow: var(--ombre);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .gov-title {
+            font-family: 'Fraunces', serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--vert-sapin);
+        }
+
+        .gov-card.human .gov-title {
+            color: var(--terracotta);
+        }
+
+        .gov-text {
+            font-size: 15px;
+            color: var(--vert-sapin);
+            line-height: 1.4;
+        }
+
+        /* Barre inférieure permanente */
+        footer {
+            height: 46px;
+            padding: 0 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--bordure);
+            background: rgba(251, 245, 236, 0.96);
+            z-index: 10;
+            flex-shrink: 0;
+            font-size: 13px;
+        }
+
+        .signature {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            color: var(--vert-sapin);
+            opacity: 0.85;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .slide-counter {
+            font-weight: 600;
+            color: var(--texte-mut);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .btn-nav {
+            background: var(--blanc);
+            border: 1px solid var(--bordure);
+            color: var(--vert-sapin);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-nav:hover {
+            background: var(--vert-sapin);
+            color: var(--blanc);
+            border-color: var(--vert-sapin);
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: var(--blanc);
+            color: var(--vert-sapin);
+            border-color: var(--bordure);
+        }
+
+        /* Barre de progression */
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--terracotta);
+            transition: width 0.25s ease;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Barre de titre -->
+        <header>
+            <div class="brand-name">Pattes &amp; Papilles</div>
+            <div class="header-meta">Comité de direction · Plan anti-churn 2026</div>
+        </header>
+
+        <!-- Scène des 10 diapositives -->
+        <main class="slides-container" id="slidesContainer">
+            
+            <!-- Diapositive 1 : Diagnostic global -->
+            <section class="slide active" data-slide="1">
+                <div class="slide-content">
+                    <h1 class="slide-title">Trois ruptures au printemps ont stoppé la croissance</h1>
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-value">4,9 %</div>
+                            <div class="kpi-label">churn mensuel</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">501 k€</div>
+                            <div class="kpi-label">risque annuel</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value">4,2 ×</div>
+                            <div class="kpi-label">fidélité abonnement</div>
+                        </div>
+                    </div>
+                    <p class="slide-text">Tarifs, transport et recette contestée expliquent la crise.</p>
+                </div>
+            </section>
+
+            <!-- Diapositive 2 : Rupture temporelle de mars -->
+            <section class="slide" data-slide="2">
+                <div class="slide-content">
+                    <h2 class="slide-title">La rupture de mars a fait bondir le départ des nouveaux inscrits</h2>
+                    <div class="slide-graphic-box">
+                        <img src="assets/graphique_1_churn_mensuel_hausse_prix.png" alt="Évolution du churn mensuel et rupture de mars" class="slide-graphic">
+                    </div>
+                    <p class="slide-text">Le churn atteint 52,2 % pour les inscrits post-mars, contre 27,8 % auparavant.</p>
+                </div>
+            </section>
+
+            <!-- Diapositive 3 : Recette féline au saumon -->
+            <section class="slide" data-slide="3">
+                <div class="slide-content">
+                    <h2 class="slide-title">La recette saumon concentre la moitié des départs de ses acheteurs</h2>
+                    <div class="slide-graphic-box">
+                        <img src="assets/graphique_6_impact_recette_saumon.png" alt="Impact de la recette chat au saumon du 4 mai" class="slide-graphic">
+                    </div>
+                    <p class="slide-text">Cette référence regroupe 80 % des rejets alimentaires et affiche 49,4 % d'attrition.</p>
+                </div>
+            </section>
+
+            <!-- Diapositive 4 : Motifs déclarés de départ -->
+            <section class="slide" data-slide="4">
+                <div class="slide-content">
+                    <h2 class="slide-title">Le prix et la logistique expliquent 44 % des départs</h2>
+                    <div class="slide-graphic-box">
+                        <img src="assets/graphique_4_motifs_depart_churn.png" alt="Répartition des motifs de départ déclarés" class="slide-graphic">
+                    </div>
+                    <p class="slide-text">La révision tarifaire et les avaries de transport dominent les résiliations déclarées.</p>
+                </div>
+            </section>
+
+            <!-- Diapositive 5 : Signaux précurseurs -->
+            <section class="slide" data-slide="5">
+                <div class="slide-content">
+                    <h2 class="slide-title">Décaler deux livraisons ou accumuler les tickets signale un départ</h2>
+                    <div class="slide-graphic-box">
+                        <img src="assets/graphique_5_signaux_precurseurs.png" alt="Signaux précurseurs : sauts de livraison et tickets SAV" class="slide-graphic">
+                    </div>
+                    <p class="slide-text">Le risque d'attrition bondit à 33,3 % dès le second report de commande.</p>
+                </div>
+            </section>
+
+            <!-- Diapositive 6 : Canaux d'acquisition -->
+            <section class="slide" data-slide="6">
+                <div class="slide-content">
+                    <h2 class="slide-title">L'influence et le social payant enregistrent les plus fortes pertes</h2>
+                    <div class="slide-graphic-box">
+                        <img src="assets/graphique_3_churn_canaux_acquisition.png" alt="Comparaison du churn selon le canal d'acquisition" class="slide-graphic">
+                    </div>
+                    <p class="slide-text">Les influenceurs affichent un coût de 100 € et 45,6 % de churn.</p>
+                </div>
+            </section>
+
+            <!-- Diapositive 7 : Volatilité des remises agressives -->
+            <section class="slide" data-slide="7">
+                <div class="slide-content">
+                    <h2 class="slide-title">La remise de 30 % attire une clientèle très volatile</h2>
+                    <div class="slide-graphic-box">
+                        <img src="assets/graphique_2_churn_remise_bienvenue.png" alt="Taux de churn selon la remise de bienvenue" class="slide-graphic">
+                    </div>
+                    <p class="slide-text">Le taux de churn atteint 49,2 % avec ce rabais agressif.</p>
+                </div>
+            </section>
+
+            <!-- Diapositive 8 : Plan d'action opérationnel -->
+            <section class="slide" data-slide="8">
+                <div class="slide-content">
+                    <h2 class="slide-title">Trois horizons restaurent la fidélité client</h2>
+                    <div class="plan-grid">
+                        <div class="plan-card">
+                            <div class="plan-horizon">Semaine 1</div>
+                            <div class="plan-desc">Urgence saumon et appels critiques.</div>
+                        </div>
+                        <div class="plan-card">
+                            <div class="plan-horizon">Mois 1</div>
+                            <div class="plan-desc">Alertes de surstock.</div>
+                        </div>
+                        <div class="plan-card">
+                            <div class="plan-horizon">Trimestre 1</div>
+                            <div class="plan-desc">Renégociation logistique.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diapositive 9 : Rentabilité financière -->
+            <section class="slide" data-slide="9">
+                <div class="slide-content">
+                    <h2 class="slide-title">Le plan de 30 000 euros dégage 65 000 à 145 000 euros net</h2>
+                    <div class="finance-grid">
+                        <div class="finance-card">
+                            <div class="finance-tag">Prudent</div>
+                            <div class="finance-gain">+65 442 €</div>
+                            <div class="finance-roi">ROI +218 %</div>
+                        </div>
+                        <div class="finance-card highlight">
+                            <div class="finance-tag">Central</div>
+                            <div class="finance-gain">+145 684 €</div>
+                            <div class="finance-roi">ROI +486 %</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Diapositive 10 : Gouvernance IA et Humain -->
+            <section class="slide" data-slide="10">
+                <div class="slide-content">
+                    <h2 class="slide-title">Ce que l'IA a fait, ce que l'humain a validé</h2>
+                    <div class="governance-grid">
+                        <div class="gov-card">
+                            <div class="gov-title">IA</div>
+                            <div class="gov-text">Détection des signaux précurseurs et calculs financiers.</div>
+                        </div>
+                        <div class="gov-card human">
+                            <div class="gov-title">Humain</div>
+                            <div class="gov-text">Validation des courriels, gestes commerciaux et logistique.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Barre inférieure permanente -->
+        <footer>
+            <div class="signature">« Bien nourris, bien dans leurs pattes. »</div>
+            <div class="nav-controls">
+                <button class="btn-nav" id="prevBtn" title="Précédent (Flèche gauche)">←</button>
+                <div class="slide-counter" id="slideCounter">01 / 10</div>
+                <button class="btn-nav" id="nextBtn" title="Suivant (Flèche droite)">→</button>
+            </div>
+        </footer>
+
+        <!-- Progression en bas d'écran -->
+        <div class="progress-bar" id="progressBar" style="width: 10%;"></div>
+    </div>
+
+    <!-- Script de navigation au clavier et aux boutons -->
+    <script>
+        (function() {
+            const slides = document.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+            let currentSlideIndex = 0;
+
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const slideCounter = document.getElementById('slideCounter');
+            const progressBar = document.getElementById('progressBar');
+
+            function updateSlide(index) {
+                if (index < 0 || index >= totalSlides) return;
+                
+                slides[currentSlideIndex].classList.remove('active');
+                currentSlideIndex = index;
+                slides[currentSlideIndex].classList.add('active');
+
+                // Mise à jour de l'interface
+                const displayIndex = String(currentSlideIndex + 1).padStart(2, '0');
+                const displayTotal = String(totalSlides).padStart(2, '0');
+                slideCounter.textContent = `${displayIndex} / ${displayTotal}`;
+
+                const progressPct = ((currentSlideIndex + 1) / totalSlides) * 100;
+                progressBar.style.width = `${progressPct}%`;
+
+                prevBtn.disabled = (currentSlideIndex === 0);
+                nextBtn.disabled = (currentSlideIndex === totalSlides - 1);
+            }
+
+            function nextSlide() {
+                if (currentSlideIndex < totalSlides - 1) {
+                    updateSlide(currentSlideIndex + 1);
+                }
+            }
+
+            function prevSlide() {
+                if (currentSlideIndex > 0) {
+                    updateSlide(currentSlideIndex - 1);
+                }
+            }
+
+            // Événements boutons
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            // Navigation au clavier
+            window.addEventListener('keydown', function(e) {
+                switch(e.key) {
+                    case 'ArrowRight':
+                    case 'ArrowDown':
+                    case 'PageDown':
+                    case ' ':
+                        e.preventDefault();
+                        nextSlide();
+                        break;
+                    case 'ArrowLeft':
+                    case 'ArrowUp':
+                    case 'PageUp':
+                    case 'Backspace':
+                        e.preventDefault();
+                        prevSlide();
+                        break;
+                    case 'Home':
+                        e.preventDefault();
+                        updateSlide(0);
+                        break;
+                    case 'End':
+                        e.preventDefault();
+                        updateSlide(totalSlides - 1);
+                        break;
+                }
+            });
+
+            // Support tactile / glissement (swipe)
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            window.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            window.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) {
+                    nextSlide();
+                } else if (touchEndX - touchStartX > 50) {
+                    prevSlide();
+                }
+            }, { passive: true });
+
+            // Initialisation
+            updateSlide(0);
+        })();
+    </script>
+</body>
+</html>

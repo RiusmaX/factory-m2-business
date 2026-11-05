@@ -70,7 +70,7 @@ Le 1er mars 2026, Pattes & Papilles a augmenté ses tarifs de 5 %, puis a chang�
 | Inscrits avant le 1er mars 2026 | 1 621 | 450 | 27,76 % | `customers.csv` : `signup_date < '2026-03-01'` |
 | Inscrits à partir du 1er mars 2026 | 364 | 190 | 52,20 % | `customers.csv` : `signup_date >= '2026-03-01'` |
 
-Le churn des nouveaux inscrits ayant rejoint la marque après le 1er mars 2026 a presque doublé (+88 % d'augmentation relative, passant de 27,76 % à 52,20 %).
+Le churn des nouveaux inscrits ayant rejoint la marque après le 1er mars 2026 a presque doublé (+88 % d'augmentation relative : le taux grimpe de 27,76 % à 52,20 %).
 
 ---
 

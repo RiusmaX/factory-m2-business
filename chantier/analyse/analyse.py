@@ -10,6 +10,8 @@ Règle usine : Noms de variables en anglais, commentaires en français.
 """
 
 import os
+import re
+import base64
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,6 +19,7 @@ import matplotlib.pyplot as plt
 # Configuration des répertoires de travail
 DATA_DIR = "donnees"
 OUTPUT_DIR = "chantier/analyse"
+DASHBOARD_PATH = "chantier/livrables/tableau-de-bord.html"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Charte graphique officielle de Pattes & Papilles
@@ -611,6 +614,56 @@ def main():
     generate_chart_5_precursor_signals(customers_df)
     generate_chart_6_salmon_crisis(customers_df, orders_df)
     print("Tous les graphiques ont été régénérés avec succès.")
+    
+    print("\n--- Intégration dans le tableau de bord HTML ---")
+    update_dashboard_html()
+
+
+def update_dashboard_html():
+    """
+    Met à jour les images encodées en base64 dans le tableau de bord HTML autonome.
+    Garantit une page sans dépendances locales manquantes lisible par la direction marketing.
+    """
+    if not os.path.exists(DASHBOARD_PATH):
+        print(f"Avertissement : Le fichier {DASHBOARD_PATH} n'existe pas encore.")
+        return
+
+    chart_files = [
+        "graphique_1_churn_mensuel_hausse_prix.png",
+        "graphique_2_churn_remise_bienvenue.png",
+        "graphique_3_churn_canaux_acquisition.png",
+        "graphique_4_motifs_depart_churn.png",
+        "graphique_5_signaux_precurseurs.png",
+        "graphique_6_impact_recette_saumon.png"
+    ]
+
+    b64_images = []
+    for cf in chart_files:
+        fpath = os.path.join(OUTPUT_DIR, cf)
+        if os.path.exists(fpath):
+            with open(fpath, "rb") as img_file:
+                b64_images.append(base64.b64encode(img_file.read()).decode('utf-8'))
+        else:
+            print(f"Erreur : image manquante {fpath}")
+            return
+
+    with open(DASHBOARD_PATH, "r", encoding="utf-8") as f:
+        html_content = f.read()
+
+    def replace_b64(match):
+        idx = replace_b64.counter
+        replace_b64.counter += 1
+        if idx < len(b64_images):
+            return f'src="data:image/png;base64,{b64_images[idx]}"'
+        return match.group(0)
+
+    replace_b64.counter = 0
+    updated_html = re.sub(r'src="data:image/png;base64,[^"]+"', replace_b64, html_content)
+
+    with open(DASHBOARD_PATH, "w", encoding="utf-8") as f:
+        f.write(updated_html)
+
+    print(f"Tableau de bord HTML autonome mis à jour avec les 6 graphiques intégrés : {DASHBOARD_PATH}")
 
 
 if __name__ == "__main__":
